@@ -55,7 +55,7 @@ app.post("/calcular-frete", async (req, res) => {
 
     // As medidas 8 x 10 x 30 cm e peso de até 1 kg não atendem ao PACMINI.
     // Por isso consultamos PAC e SEDEX.
-    const servicos = ["PAC", "SEDEX"];
+   const servicos = ["PAC", "SEDEX", "JADLOG"];
 
     const resultados = await Promise.all(
       servicos.map((servico) =>
