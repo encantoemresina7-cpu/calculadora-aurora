@@ -191,7 +191,6 @@ function nomeServico(servico) {
   if (servico === "PACMINI") return "PAC Mini";
   return servico;
 }
-
 function converterValor(valor) {
   if (typeof valor === "number") {
     return valor;
@@ -201,34 +200,19 @@ function converterValor(valor) {
     .trim()
     .replace(/[R$\s]/g, "");
 
-  // Ex.: 1.281,00
   if (texto.includes(".") && texto.includes(",")) {
     texto = texto
       .replace(/\./g, "")
       .replace(",", ".");
-  }
-  // Ex.: 12,81
-  else if (texto.includes(",")) {
+  } else if (texto.includes(",")) {
     texto = texto.replace(",", ".");
-  }
-  // Ex.: 12.81
-  else {
+  } else {
     texto = texto.replace(/[^\d.-]/g, "");
   }
 
   const numero = Number(texto);
 
   return Number.isFinite(numero) ? numero : NaN;
-}
-  if (typeof valor === "number") return valor;
-
-  return Number(
-    String(valor)
-      .trim()
-      .replace(/\./g, "")
-      .replace(",", ".")
-      .replace(/[^\d.-]/g, "")
-  );
 }
 
 function converterInteiro(valor) {
@@ -242,10 +226,12 @@ function somenteNumeros(valor) {
 
 function normalizarDecimal(valor) {
   const numero = converterValor(valor);
+
   return Number.isFinite(numero) && numero >= 0
     ? numero.toFixed(2)
     : "0.00";
 }
+
 
 app.use((_req, res) => {
   res.status(404).json({
