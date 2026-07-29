@@ -160,7 +160,7 @@ function extrairOpcoes(resposta) {
   const resultado = resposta?.resultado || resposta || {};
   const opcoes = [];
 
-  for (const servico of ["PAC", "SEDEX", "PACMINI"]) {
+for (const servico of ["PAC", "SEDEX", "PACMINI", "JADLOG"]) {
     const item =
       resultado[servico] ||
       resultado[servico.toLowerCase()] ||
@@ -189,6 +189,7 @@ function extrairErro(resposta) {
 
 function nomeServico(servico) {
   if (servico === "PACMINI") return "PAC Mini";
+  if (servico === "JADLOG") return "Jadlog";
   return servico;
 }
 function converterValor(valor) {
