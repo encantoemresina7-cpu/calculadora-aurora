@@ -193,6 +193,33 @@ function nomeServico(servico) {
 }
 
 function converterValor(valor) {
+  if (typeof valor === "number") {
+    return valor;
+  }
+
+  let texto = String(valor ?? "")
+    .trim()
+    .replace(/[R$\s]/g, "");
+
+  // Ex.: 1.281,00
+  if (texto.includes(".") && texto.includes(",")) {
+    texto = texto
+      .replace(/\./g, "")
+      .replace(",", ".");
+  }
+  // Ex.: 12,81
+  else if (texto.includes(",")) {
+    texto = texto.replace(",", ".");
+  }
+  // Ex.: 12.81
+  else {
+    texto = texto.replace(/[^\d.-]/g, "");
+  }
+
+  const numero = Number(texto);
+
+  return Number.isFinite(numero) ? numero : NaN;
+}
   if (typeof valor === "number") return valor;
 
   return Number(
