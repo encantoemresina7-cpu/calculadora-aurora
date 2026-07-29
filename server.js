@@ -152,8 +152,11 @@ async function consultarMandaBem({ servico, cepDestino, valorSeguro }) {
       extrairErro(json) || `Falha HTTP ${resposta.status} ao consultar ${servico}.`
     );
   }
-console.log(JSON.stringify(json, null, 2));
-  return json;
+console.log("=== RESPOSTA DA MANDA BEM ===");
+console.dir(json, { depth: null });
+console.log("============================");
+
+return json;
 }
 
 function extrairOpcoes(resposta) {
