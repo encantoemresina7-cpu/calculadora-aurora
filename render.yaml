@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: calculadora-aurora-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /saude
+    envVars:
+      - key: MANDA_BEM_API_ID
+        sync: false
+      - key: MANDA_BEM_API_TOKEN
+        sync: false
+      - key: CEP_ORIGEM
+        value: "13225020"
+      - key: PESO
+        value: "1"
+      - key: ALTURA
+        value: "8"
+      - key: LARGURA
+        value: "10"
+      - key: COMPRIMENTO
+        value: "30"
