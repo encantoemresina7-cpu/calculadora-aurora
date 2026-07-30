@@ -55,7 +55,7 @@ app.post("/calcular-frete", async (req, res) => {
 
     // As medidas 8 x 10 x 30 cm e peso de até 1 kg não atendem ao PACMINI.
     // Por isso consultamos PAC e SEDEX.
-   const servicos = ["PAC", "SEDEX", "JADLOG"];
+ const servicos = ["PAC", "SEDEX", "JADLOG_EXP"];
 
     const resultados = await Promise.all(
       servicos.map((servico) =>
@@ -163,7 +163,7 @@ function extrairOpcoes(resposta) {
   const resultado = resposta?.resultado || resposta || {};
   const opcoes = [];
 
-for (const servico of ["PAC", "SEDEX", "PACMINI", "JADLOG"]) {
+for (const servico of ["PAC", "SEDEX", "PACMINI", "JADLOG_EXP"]) {
     const item =
       resultado[servico] ||
       resultado[servico.toLowerCase()] ||
@@ -190,9 +190,10 @@ function extrairErro(resposta) {
   return resultado.erro || resultado.mensagem_erro || null;
 }
 
-function nomeServico(servico) {
+
+ function nomeServico(servico) {
   if (servico === "PACMINI") return "PAC Mini";
-  if (servico === "JADLOG") return "Jadlog";
+  if (servico === "JADLOG_EXP") return "Jadlog";
   return servico;
 }
 function converterValor(valor) {
