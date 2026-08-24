@@ -7,6 +7,9 @@ const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const freightCache = new Map();
+const CACHE_MS = 30 * 60 * 1000;
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const MANDA_BEM_URL = "https://mandabem.com.br/ws/valor_envio";
 const CEP_ORIGEM = somenteNumeros(process.env.CEP_ORIGEM || "13225020");
@@ -52,20 +55,24 @@ app.post("/calcular-frete", async (req, res) => {
     }
 
     const valorSeguro = normalizarDecimal(req.body?.valorSeguro ?? "0.00");
+    const cacheKey = `${cepDestino}:${valorSeguro}`;
+    const cached = freightCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) return res.json(cached.data);
 
     // As medidas 8 x 10 x 30 cm e peso de até 1 kg não atendem ao PACMINI.
     // Por isso consultamos PAC e SEDEX.
  const servicos = ["PAC", "SEDEX", "JADLOG_EXP"];
 
-    const resultados = await Promise.all(
-      servicos.map((servico) =>
-        consultarMandaBem({
-          servico,
-          cepDestino,
-          valorSeguro
-        })
-      )
-    );
+    const resultados = [];
+    for (const servico of servicos) {
+      try {
+        resultados.push(await consultarMandaBem({ servico, cepDestino, valorSeguro }));
+      } catch (error) {
+        console.error(`Falha isolada em ${servico}:`, error.message);
+        resultados.push({ erro: error.message });
+      }
+      if (servico !== servicos[servicos.length - 1]) await delay(2500);
+    }
 
     const opcoes = resultados
       .flatMap((resultado) => extrairOpcoes(resultado))
@@ -87,13 +94,15 @@ app.post("/calcular-frete", async (req, res) => {
 
     opcoes.sort((a, b) => a.valor - b.valor);
 
-    return res.json({
+    const responseData = {
       sucesso: true,
       cepOrigem: CEP_ORIGEM,
       cepDestino,
       pacote: PACOTE,
       opcoes
-    });
+    };
+    freightCache.set(cacheKey, { data: responseData, expiresAt: Date.now() + CACHE_MS });
+    return res.json(responseData);
   } catch (erro) {
     console.error("Erro ao calcular frete:", erro);
 
