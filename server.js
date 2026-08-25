@@ -8,7 +8,8 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const freightCache = new Map();
-const CACHE_MS = 30 * 60 * 1000;
+const CACHE_MS = 6 * 60 * 60 * 1000;
+const STALE_CACHE_MS = 24 * 60 * 60 * 1000;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const MANDA_BEM_URL = "https://mandabem.com.br/ws/valor_envio";
@@ -61,18 +62,19 @@ app.post("/calcular-frete", async (req, res) => {
 
     // As medidas 8 x 10 x 30 cm e peso de até 1 kg não atendem ao PACMINI.
     // Por isso consultamos PAC e SEDEX.
- const servicos = ["PAC", "SEDEX", "JADLOG_EXP"];
+    const servicos = ["PAC", "SEDEX", "JADLOG_EXP"];
 
-    const resultados = [];
-    for (const servico of servicos) {
+    // As consultas eram feitas em sequência e podiam levar mais de 60 segundos,
+    // fazendo o chatbot desistir antes da resposta. Executá-las em paralelo
+    // mantém o cálculo dentro do tempo do WhatsApp e isola falhas por serviço.
+    const resultados = await Promise.all(servicos.map(async (servico) => {
       try {
-        resultados.push(await consultarMandaBem({ servico, cepDestino, valorSeguro }));
+        return await consultarComNovaTentativa({ servico, cepDestino, valorSeguro });
       } catch (error) {
         console.error(`Falha isolada em ${servico}:`, error.message);
-        resultados.push({ erro: error.message });
+        return { erro: error.message };
       }
-      if (servico !== servicos[servicos.length - 1]) await delay(2500);
-    }
+    }));
 
     const opcoes = resultados
       .flatMap((resultado) => extrairOpcoes(resultado))
@@ -81,6 +83,11 @@ app.post("/calcular-frete", async (req, res) => {
       );
 
     if (opcoes.length === 0) {
+      if (cached && cached.staleUntil > Date.now()) {
+        console.warn(`Usando última cotação válida para ${cepDestino}.`);
+        return res.json(cached.data);
+      }
+
       const erros = resultados
         .map(extrairErro)
         .filter(Boolean);
@@ -101,7 +108,11 @@ app.post("/calcular-frete", async (req, res) => {
       pacote: PACOTE,
       opcoes
     };
-    freightCache.set(cacheKey, { data: responseData, expiresAt: Date.now() + CACHE_MS });
+    freightCache.set(cacheKey, {
+      data: responseData,
+      expiresAt: Date.now() + CACHE_MS,
+      staleUntil: Date.now() + STALE_CACHE_MS
+    });
     return res.json(responseData);
   } catch (erro) {
     console.error("Erro ao calcular frete:", erro);
@@ -166,6 +177,20 @@ console.dir(json, { depth: null });
 console.log("============================");
 
 return json;
+}
+
+async function consultarComNovaTentativa(dados) {
+  let ultimoErro;
+  for (let tentativa = 1; tentativa <= 2; tentativa += 1) {
+    try {
+      return await consultarMandaBem(dados);
+    } catch (error) {
+      ultimoErro = error;
+      console.error(`Tentativa ${tentativa}/2 em ${dados.servico}:`, error.message);
+      if (tentativa < 2) await delay(1200);
+    }
+  }
+  throw ultimoErro;
 }
 
 function extrairOpcoes(resposta) {
