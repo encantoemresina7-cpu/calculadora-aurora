@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7a546b">
+  <meta name="description" content="Personalize seus quadros infantis: escolha uma arte, coloque o nome, veja na moldura e baixe para enviar ao cliente.">
+  <title>Seu Ateliê · Personalizador de quadros</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Seu Ateliê, página inicial">
+      <span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><rect x="7" y="7" width="26" height="28" rx="4"/><path d="M13 15h14v14H13zM20 2v6M17 5h6"/></svg></span>
+      <span>seu ateliê<span class="brand-caption">PERSONALIZADOR DE QUADROS</span></span>
+    </a>
+    <button id="helpBtn" class="button button-quiet"><span aria-hidden="true">ⓘ</span> Como usar</button>
+  </header>
+
+  <main class="page">
+    <section class="intro">
+      <div><p class="eyebrow">FEITO COM NOME. FEITO COM CARINHO.</p><h1>Uma arte, feita para encantar<span>.</span></h1><p class="intro-text">Escolha a imagem, personalize e prepare uma prévia especial para seu cliente.</p></div>
+      <div class="intro-note"><span class="small-frame" aria-hidden="true">♡</span><span>Da sua criatividade<br><strong>para o quarto dos sonhos.</strong></span></div>
+    </section>
+
+    <div class="workspace">
+      <aside class="editor" aria-label="Controles do personalizador">
+        <section class="panel art-panel">
+          <div class="section-title"><span class="step">01</span><h2>Escolha a arte</h2><span class="section-meta" id="artCount">4 modelos</span></div>
+          <div class="gallery" id="gallery" aria-label="Artes disponíveis"></div>
+          <label class="upload-card" id="uploadZone" for="uploadInput">
+            <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m-4 4 4-4 4 4M4 15v5h16v-5"/></svg></span>
+            <span><strong>Usar minha imagem</strong><small>PNG, JPG ou WEBP · até 15 MB</small></span><span class="upload-plus" aria-hidden="true">+</span>
+          </label>
+          <input type="file" id="uploadInput" accept="image/png,image/jpeg,image/webp" multiple class="sr-only">
+          <p class="hint">Use uma arte sem nome para personalizar.</p>
+          <button id="removeArtBtn" class="text-button danger" hidden>Remover minha imagem deste aparelho</button>
+        </section>
+
+        <section class="panel name-panel" id="namePanel">
+          <div class="section-title"><span class="step">02</span><h2>Um nome especial</h2></div>
+          <label for="nameInput" class="field-label">Nome na arte</label>
+          <div class="name-field"><input id="nameInput" type="text" value="Alice" maxlength="50" placeholder="Digite o nome" autocomplete="off"><span id="nameCount">5/50</span></div>
+          <div class="field-row"><label for="fontSelect" class="field-label">Estilo da letra</label><label for="colorInput" class="field-label color-label">Cor do nome</label></div>
+          <div class="field-row"><select id="fontSelect"><option value="Caligrafia">Caligrafia</option><option value="Delicada">Delicada</option><option value="Classica">Clássica</option><option value="Moderna">Moderna</option></select><div class="color-picker"><input type="color" id="colorInput" value="#987180" aria-label="Escolher a cor do nome"><span id="colorHex">#987180</span></div></div>
+          <div class="swatches" id="nameSwatches" aria-label="Cores sugeridas do nome"></div>
+          <div class="range-header"><label for="sizeRange">Tamanho da letra</label><output id="sizeOutput">14%</output></div>
+          <input type="range" id="sizeRange" min="4" max="24" step="0.5" value="14">
+          <div class="position-buttons" aria-label="Posição do nome"><button type="button" data-position="top">No alto</button><button type="button" data-position="bottom" class="active">Embaixo</button><button type="button" id="centerBtn" title="Centralizar o nome horizontalmente">Centralizar</button></div>
+          <p class="hint drag-hint"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v16M2 10h16M7 5l3-3 3 3M7 15l3 3 3-3M5 7l-3 3 3 3M15 7l3 3-3 3"/></svg> Arraste o nome na prévia para ajustar.</p>
+          <details class="additional-text"><summary>Adicionar uma frase <span>+</span></summary><label for="subtitleInput" class="field-label">Frase opcional</label><input id="subtitleInput" type="text" maxlength="100" placeholder="Ex.: Um mundo de sonhos" autocomplete="off"></details>
+        </section>
+
+        <section class="panel finish-panel">
+          <div class="section-title"><span class="step">03</span><h2>Os detalhes</h2></div>
+          <label for="formatSelect" class="field-label">Formato da arte</label>
+          <select id="formatSelect"><option value="a4">A4 · 21 × 29,7 cm</option><option value="24x33">24 × 33 cm</option><option value="square">Quadrado · 20 × 20 cm</option><option value="original">Formato da imagem</option></select>
+          <div class="range-header"><label for="imageScale">Tamanho da imagem</label><output id="imageScaleOutput">100%</output></div><input type="range" id="imageScale" min="35" max="140" value="100">
+          <div class="range-header"><label for="imageY">Posição da imagem</label><output id="imageYOutput">Centro</output></div><input type="range" id="imageY" min="-25" max="25" value="0">
+          <div class="two-fields"><div><label for="frameSelect" class="field-label">Moldura da prévia</label><select id="frameSelect"><option value="white">Branca</option><option value="wood">Madeira clara</option><option value="pink">Rosa</option><option value="black">Preta</option><option value="none">Sem moldura</option></select></div><div><label for="backgroundInput" class="field-label">Fundo da arte</label><div class="color-picker full"><input type="color" id="backgroundInput" value="#ffffff" aria-label="Cor de fundo da arte"><span id="backgroundHex">#FFFFFF</span></div></div></div>
+          <label class="checkbox"><input id="borderCheck" type="checkbox"><span>Adicionar borda delicada</span></label>
+          <label class="checkbox"><input id="proofCheck" type="checkbox" checked><span>Escrever “Prévia ilustrativa” no cenário</span></label>
+          <p class="hint">A moldura e o cenário aparecem só na prévia.</p>
+        </section>
+      </aside>
+
+      <section class="preview-section" aria-label="Prévia e exportação">
+        <div class="preview-heading"><div><span class="live-dot"></span><strong>Sua criação, ao vivo</strong></div><button id="undoBtn" class="icon-button" aria-label="Desfazer última alteração" title="Desfazer" disabled><svg viewBox="0 0 24 24"><path d="m8 4-5 5 5 5M3 9h11a6 6 0 0 1 0 12"/></svg></button></div>
+        <div class="preview-card">
+          <div class="preview-toolbar"><div class="segmented" role="group" aria-label="Tipo de prévia"><button type="button" id="sceneMode" class="active" aria-pressed="true">Com moldura</button><button type="button" id="artMode" aria-pressed="false">Só a arte</button></div><span class="format-badge" id="formatBadge">A4</span></div>
+          <div class="canvas-wrap" id="canvasWrap"><canvas id="previewCanvas" width="1200" height="1200" tabindex="0" aria-label="Prévia do quadro infantil. Arraste o nome com o mouse ou toque; use as setas para mover o nome."></canvas><div class="canvas-loading" id="canvasLoading"><span></span> Preparando sua arte…</div></div>
+          <div class="preview-footer"><span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"/></svg> <span id="currentArtLabel">Bailarina</span><span class="divider-dot">·</span><span id="currentNameLabel">Alice</span></span><button id="goToEditor" class="text-button mobile-edit">Editar nome ↓</button><button id="resetBtn" class="text-button">Recomeçar</button></div>
+        </div>
+
+        <section class="export-card">
+          <div class="export-heading"><div><h2>Prontinha para compartilhar</h2><p>Mostre ao cliente como o quadro vai ficar.</p></div><span class="export-flower" aria-hidden="true">✿</span></div>
+          <div class="export-actions"><button id="downloadPreview" class="button button-primary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 17v4h16v-4"/></svg> Baixar prévia</button><button id="shareBtn" class="button button-share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.9L3 21l1.6-4.6A9 9 0 1 1 21 11.5Z"/><path d="M8 7c0 4.6 2.4 7 7 7l1-2-3-1-1 1-2-2 1-1-1-3Z"/></svg> Compartilhar imagem</button></div>
+          <div class="print-line"><span><strong>Quer imprimir?</strong> Baixe a arte sem cenário.</span><button id="downloadArt" class="text-button">Baixar arte em alta <span aria-hidden="true">↗</span></button></div>
+          <p id="exportInfo" class="export-hint">Prévia JPG · 1600 × 1600 px &nbsp; / &nbsp; Arte PNG · A4</p>
+        </section>
+
+        <div class="use-note"><span aria-hidden="true">♡</span><p><strong>Seu toque faz a diferença.</strong> Confira o nome com o cliente antes de imprimir. As imagens enviadas ficam salvas neste navegador.</p></div>
+      </section>
+    </div>
+    <footer class="page-footer"><span>Pequenos detalhes. Lindas memórias.</span><span>Personalizador de quadros infantis</span></footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="helpDialog" aria-labelledby="helpTitle"><button id="closeHelp" class="dialog-close" aria-label="Fechar ajuda">×</button><p class="eyebrow">SEU ATELIÊ, DO SEU JEITO</p><h2 id="helpTitle">Uma prévia em poucos passos</h2><ol><li><strong>Escolha a arte.</strong> Use um modelo ou envie suas imagens sem nome. Elas ficam guardadas neste aparelho.</li><li><strong>Personalize.</strong> Digite o nome, escolha a letra e a cor. Arraste o nome na prévia para posicionar.</li><li><strong>Envie ao cliente.</strong> Baixe a prévia e anexe no WhatsApp. No celular, “Compartilhar imagem” pode abrir o menu de aplicativos.</li><li><strong>Para imprimir.</strong> “Baixar arte em alta” exporta somente a arte. No A4, o arquivo tem 2480 × 3508 pixels; imprima no tamanho escolhido, em escala 100%.</li></ol><p class="help-note">O editor adiciona texto; use imagens sem um nome já impresso. O enquadramento preserva a imagem inteira por padrão. Aumentar o tamanho pode recortar as bordas. A nitidez da impressão depende da imagem enviada.</p><button id="startBtn" class="button button-primary">Vamos personalizar</button></dialog>
+</body>
+</html>
