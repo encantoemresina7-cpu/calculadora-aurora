@@ -1,26 +1,31 @@
-# Personalizador de quadros infantis
+# Personalizador de quadros infantis — biblioteca de kits
 
-Mesmo editor visual para carregar uma arte, digitar o nome, escolher fonte e cor, arrastar a posição, ajustar formato e moldura e baixar uma imagem para enviar ao cliente.
+Editor sem login para organizar as artes, personalizar o nome e a inicial e exportar quadros individuais ou kits com três peças.
+
+## Biblioteca
+
+20 artes enviadas pela loja, além dos quatro temas já existentes. Categorias: Fazendeiro, Dinossauro, Astronauta, Safari, Bosque encantado, Marinheiro e Outros temas. Os originais são preservados em assets/kits/*-original.webp (cópias WebP otimizadas, na resolução de origem); seis bases sem texto tornam os monogramas e nomes reutilizáveis. O monograma editável é composto com a fonte e o acabamento escolhidos; sua forma acompanha a letra digitada.
+
+## Uso
+
+1. Escolha um kit ou uma arte individual.
+2. Digite o nome do cliente. A inicial pode acompanhar o nome ou ser digitada separadamente.
+3. Selecione Quadro 1, 2 ou 3 para trocar a arte e escolher nome, inicial, fundo, fonte e posição.
+4. Baixe a prévia JPG de 1600 × 1600 px para aprovação. O compartilhamento usa o menu de arquivos do aparelho, com download como alternativa.
+5. Para impressão, baixe uma arte PNG ou o ZIP com três PNGs separados. A4: 2480 × 3508 px com metadados de 300 dpi. A nitidez depende da resolução original.
+
+O fundo da arte e a parede da prévia são independentes. A opção de colorir o papel remove somente as áreas claras ligadas ao fundo, preservando os brancos internos contornados. Pode ser desligada para manter o papel da imagem. Imagens próprias devem preferencialmente vir sem nomes impressos.
+
+Os ajustes e uploads ficam no navegador do aparelho. Os kits incluídos ficam disponíveis para qualquer aparelho que abra o site. Nenhuma imagem é enviada a um serviço de edição externo durante o uso.
 
 ## Publicação no Render
 
-Crie um Static Site com estas configurações:
+- Repositório: https://github.com/encantoemresina7-cpu/calculadora-aurora
+- Branch: personalizador-quadros-render
+- Build: node personalizador-quadros/check.mjs
+- Publish directory: personalizador-quadros
+- SKIP_INSTALL_DEPS=true
 
-- Repository: `https://github.com/encantoemresina7-cpu/calculadora-aurora`
-- Branch: `personalizador-quadros-render`
-- Build command: `node personalizador-quadros/check.mjs`
-- Publish directory: `personalizador-quadros`
-- Environment: `SKIP_INSTALL_DEPS=true`
+Sem novas dependências, servidor ou segredos. O serviço existente permanece no mesmo endereço. O check executa validação de sintaxe, controles, biblioteca e testes de remoção de papel, iniciais acentuadas, metadados PNG e estrutura ZIP.
 
-O endereço público do serviço abre sem login do ChatGPT. O site usa HTML, CSS e JavaScript, sem servidor próprio ou dependências de instalação. Não há configurações secretas.
-
-## Uso no celular
-
-Abra o link do Render no Chrome ou Safari. Toque em **Editar nome**, faça os ajustes e baixe a prévia. O botão **Compartilhar imagem** abre o menu de compartilhamento de arquivos quando o navegador oferece esse recurso; nos demais casos, baixa a imagem para anexar no WhatsApp.
-
-- Prévia: JPG com cenário e moldura, 1600 × 1600 pixels.
-- Arte: PNG sem cenário; A4 com 2480 × 3508 pixels e metadados de 300 dpi.
-- Modelos inclusos: bailarina, sereia, passarinho e cavalinho.
-- Imagens enviadas e ajustes: armazenados somente no navegador do aparelho. Não são transferidos para outro aparelho automaticamente.
-
-Para imprimir, selecione o tamanho escolhido e a escala de 100%. A nitidez depende da resolução da arte original. Licença das fontes em `assets/fonts/LICENSE.txt`.
+Licença das fontes: assets/fonts/LICENSE.txt.

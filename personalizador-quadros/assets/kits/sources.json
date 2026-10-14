@@ -1,0 +1,32 @@
+{
+  "originals": {
+    "bosque-bento": "Bento no bosque encantado(1).png",
+    "safari-amigos": "Bernardo e os animais do safari (1)(2).png",
+    "safari-leao": "Leãozinho ao volante num carrinho vintage(1).png",
+    "fazendeiro-menino": "Menino da quinta com trator verde(1).png",
+    "safari-jipe": "Safari encantado do João(2).png",
+    "fazendeiro-trator": "Trator verde vintage em aguarela (1).png",
+    "fazendeiro-trator-lado": "Trator verde vintage em aguarela(2).png",
+    "bosque-amigos": "Três amiguinhos no bosque encantado(1).png",
+    "astronauta-foguete": "Foguete delicado rumo às estrelas(2).png",
+    "astronauta-inicial": "Inicial N com astronauta e lua(2).png",
+    "astronauta-planeta": "Planeta com anéis em aguarela(2).png",
+    "dinossauro-verde": "Dinossauro aventureiro em aguarela(1).png",
+    "dinossauro-inicial": "Monograma B Bento em aguarela(1).png",
+    "dinossauro-azul": "Tricerátopo bebé azul em aguarela(1).png",
+    "marinheiro-baleia": "Baleia bebé em aguarela suave(2).png",
+    "marinheiro-inicial": "Monograma marinheiro Nicolas em aguarela(1).png",
+    "marinheiro-veleiro": "Pequeno veleiro em aguarela(3).png",
+    "fazendeiro-celeiro": "Celeiro e trator em aguarela delicada(1).png",
+    "fazendeiro-inicial": "Quinta em aguarela com a inicial L(1).png",
+    "fazendeiro-feno": "Trator verde com carreta de feno(1).png"
+  },
+  "editable_bases": {
+    "astronauta-inicial": "exec-e28cdec3-0a00-4efb-941c-aeff38b0d1b3.png",
+    "dinossauro-inicial": "exec-6f86a270-6edf-4109-a1fb-612d531b9a2c.png",
+    "marinheiro-inicial": "exec-49709e7a-08e5-46d9-8596-72cd7316e4e1.png",
+    "fazendeiro-inicial": "exec-9d6dbf8a-e874-4ac4-8f14-2bb5b32e62e4.png",
+    "safari-amigos": "exec-c55aa826-4cfb-477a-ab23-c1817ec43ac5.png",
+    "safari-jipe": "exec-0f52eacd-e806-4b0b-8d70-3b97882160ed.png"
+  }
+}

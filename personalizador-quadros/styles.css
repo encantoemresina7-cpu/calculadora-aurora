@@ -159,3 +159,36 @@ dialog>.button{width:100%;font-size:13px}
 @media(max-width:730px){.site-header{padding:16px 18px}.brand{font-size:23px}.brand-caption{font-size:7px;letter-spacing:1.5px}.brand-icon{width:36px;height:39px}.brand-icon svg{width:30px;height:30px}.button-quiet{padding:8px 10px;font-size:11px;min-height:36px}.page{padding:25px 16px 0}.intro{margin-bottom:21px}.eyebrow{font-size:8px;letter-spacing:1.4px}.intro h1{font-size:24px;letter-spacing:-.6px}.intro-text{font-size:12px;line-height:1.6}.workspace{grid-template-columns:1fr;gap:22px}.preview-section{grid-row:1}.editor{gap:13px}.preview-heading{margin-bottom:10px}.canvas-wrap{aspect-ratio:1}.preview-footer #currentNameLabel{max-width:150px}.preview-toolbar{padding:12px 16px}.export-actions{grid-template-columns:1fr 1fr}.export-actions .button{font-size:11px;padding:12px 8px;gap:6px;min-height:44px}.export-actions .button svg{width:15px;height:15px}.export-heading h2{font-size:16px}.export-heading p{font-size:10.5px}.export-card{margin-top:13px;padding:18px}.export-flower{font-size:31px}.print-line{flex-direction:row;align-items:center;gap:10px}.print-line>span{max-width:190px}.use-note{padding:14px 9px 0}.panel{padding:20px}.gallery{gap:11px;max-height:300px}.art-option .thumbnail{aspect-ratio:1}.section-meta{font-size:10px}.art-option .art-title{font-size:11px}.upload-card{padding:15px}.hint{font-size:11px}.section-title h2{font-size:16px}.field-label{font-size:12px}.field-row{grid-template-columns:1.3fr 1fr}.color-picker span{font-size:11px}.checkbox{font-size:12px}.range-header{font-size:12px}.name-field input{font-size:20px}.page-footer{flex-direction:column;gap:5px;margin-top:25px;padding:20px 0}.position-buttons button{padding:10px}.additional-text summary{font-size:12px}.preview-section{scroll-margin-top:15px}dialog{padding:29px 24px}dialog h2{font-size:22px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media(max-width:730px){.mobile-edit{display:block}.preview-footer #resetBtn{display:none}.name-panel{scroll-margin-top:18px}.preview-footer #currentNameLabel{max-width:110px}}
+
+/* Kit library and independent picture controls. */
+.kit-select{height:46px;font-size:14px;border-color:#dbc9d4;background-color:#fdfafb}
+.composition{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0 20px}
+.composition button{border:1px solid var(--line);border-radius:9px;min-height:42px;padding:8px;font-size:11px}
+.composition button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.library-heading{display:flex;align-items:center;justify-content:space-between}
+.gallery{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px;max-height:330px;gap:11px}
+.art-option .art-title{white-space:normal;font-size:10px;line-height:1.35;min-height:27px}
+.editable-tag{display:block;color:var(--accent);font-size:8px;line-height:1.4;margin-top:2px}
+.slot-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:10px 14px;gap:7px;background:#fdfafb;border-bottom:1px solid var(--line)}
+.slot-button{min-width:0;border:1px solid var(--line);border-radius:9px;padding:9px 6px;min-height:50px;text-align:left}
+.slot-button strong{font-size:11px;display:block}.slot-button small{display:block;font-size:9px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px}
+.slot-button.active{border-color:var(--accent);background:#f3e8ee;color:var(--accent)}
+.target-note{color:var(--accent);font-size:11px;background:#f7eff3;border-radius:7px;padding:8px 10px;margin:0 0 12px}
+.label-gap{margin-top:16px}
+.initial-section{margin-top:18px;padding-top:3px;border-top:1px solid var(--line)}
+.button-kit{width:100%;background:#f3e9ef;color:var(--accent);border:1px solid #e7d6e1;margin-top:12px;font-size:12px}
+.reload-button{margin-top:10px;display:block;font-size:10px;color:var(--muted)}
+.mobile-shortcuts{display:none}
+.preview-footer>span{overflow:hidden;min-width:0}
+#currentArtLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px}
+@media(max-width:730px){
+  .mobile-shortcuts{display:flex;padding:0 16px 14px;justify-content:space-between;gap:12px}
+  .preview-footer #resetBtn{display:block}.preview-footer #currentNameLabel{max-width:90px}
+  .slot-controls{padding:9px}.slot-button small{font-size:8px}.slot-button strong{font-size:10px}
+  .art-panel{scroll-margin-top:16px}
+  input[type=text],select{font-size:16px}
+  .gallery{max-height:340px}
+  .swatch{width:26px;height:26px}
+  .composition button,.text-button{min-height:34px}
+  .print-line{flex-direction:column;align-items:flex-start;gap:3px}
+}

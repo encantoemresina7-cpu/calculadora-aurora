@@ -1,3 +1,4 @@
+import { renderInitial } from './initial.mjs?v=20261014-kits';
 export const FORMATS = {
   a4: { label: 'A4', width: 2480, height: 3508 },
   '24x33': { label: '24 × 33 cm', width: 2835, height: 3898 },
@@ -15,8 +16,8 @@ export function clamp(value, min, max) { return Math.max(min, Math.min(max, valu
 
 export function getDimensions(format, image) {
   if (FORMATS[format]) return FORMATS[format];
-  const iw = image?.naturalWidth || image?.width || 1000;
-  const ih = image?.naturalHeight || image?.height || 1400;
+  const iw = image?.sourceWidth || image?.naturalWidth || image?.width || 1000;
+  const ih = image?.sourceHeight || image?.naturalHeight || image?.height || 1400;
   const ratio = iw / ih;
   const longer = Math.min(4200, Math.max(2400, Math.max(iw, ih)));
   return { label: 'Original', width: Math.round(ratio > 1 ? longer : longer * ratio), height: Math.round(ratio > 1 ? longer / ratio : longer) };
@@ -51,11 +52,16 @@ export function renderArt(ctx, w, h, state, image) {
   ctx.fillStyle = state.background;
   ctx.fillRect(0, 0, w, h);
   ctx.beginPath();ctx.rect(0, 0, w, h);ctx.clip();
+  renderInitial(ctx,w,h,state);
   if (image) {
     const iw = image.naturalWidth || image.width;
     const ih = image.naturalHeight || image.height;
     const topName = state.namePlacement === 'top';
-    const box = { x: w * 0.055, y: h * (topName ? 0.20 : 0.025), width: w * 0.89, height: h * (topName ? 0.755 : 0.77) };
+    const monogram=state.monogram;
+    const hasName=state.showName!==false && state.name.trim() && !state.embeddedName;
+    const box = monogram
+      ? {x:0,y:0,width:w,height:h*.87}
+      : { x: w * 0.035, y: h * (topName && hasName ? 0.20 : 0.025), width: w * 0.93, height: h * (hasName ? 0.77 : .95) };
     const scale = Math.min(box.width / iw, box.height / ih) * state.imageScale / 100;
     const dw = iw * scale, dh = ih * scale;
     const dx = box.x + (box.width - dw) / 2;
@@ -73,7 +79,7 @@ export function renderArt(ctx, w, h, state, image) {
   }
   const nameBox = getNameBox(ctx, w, h, state);
   ctx.fillStyle = state.color;
-  if (nameBox.text) ctx.fillText(nameBox.text, nameBox.x, nameBox.baseline);
+  if (nameBox.text && state.showName!==false) ctx.fillText(nameBox.text, nameBox.x, nameBox.baseline);
   if ((state.subtitle || '').trim()) {
     let size = w * 0.028;
     ctx.font = `${size}px "Moderna"`;
@@ -111,7 +117,7 @@ export function getSceneLayout(w, h, artRatio, frame) {
 export function renderScene(ctx, w, h, state, artCanvas) {
   ctx.save();ctx.clearRect(0,0,w,h);
   const wall = ctx.createLinearGradient(0, 0, w, h);
-  wall.addColorStop(0, '#f9f6f1');wall.addColorStop(1, '#ece7df');
+  wall.addColorStop(0, state.wallColor||'#f9f6f1');wall.addColorStop(1, state.wallColor||'#ece7df');
   ctx.fillStyle = wall;ctx.fillRect(0,0,w,h);
   // Light architectural lines and a narrow shelf keep attention on the picture.
   ctx.strokeStyle = '#ffffff55';ctx.lineWidth = w * 0.003;
@@ -150,4 +156,29 @@ export function renderFlatPreview(ctx, w, h, artCanvas) {
   const x = (w-aw)/2, y = (h-ah)/2;
   ctx.shadowColor='#69544920';ctx.shadowBlur=w*.03;ctx.shadowOffsetY=h*.01;ctx.drawImage(artCanvas,x,y,aw,ah);ctx.restore();
   return {x,y,width:aw,height:ah,border:0};
+}
+
+// The same composition is used by the screen, downloads and sharing.
+export function renderKit(ctx,w,h,state,canvases,flat=false){
+  ctx.save();ctx.clearRect(0,0,w,h);
+  ctx.fillStyle=flat?'#f3eeeb':(state.wallColor||'#f2eee8');ctx.fillRect(0,0,w,h);
+  const gap=w*.025,limit=w*.87,ratios=canvases.map(c=>c.width/c.height);
+  const ah=Math.min(h*.59,(limit-gap*2)/ratios.reduce((a,b)=>a+b,0));
+  const total=ah*ratios.reduce((a,b)=>a+b,0)+gap*2;
+  let x=(w-total)/2;const y=(h-ah)/2-h*.04,layouts=[];
+  for(let i=0;i<canvases.length;i++){
+    const aw=ah*ratios[i],b=flat||state.frame==='none'?0:w*.010;
+    const colors={white:'#fffefd',wood:'#cdb18b',pink:'#d9b5c3',black:'#373332'};
+    ctx.save();ctx.shadowColor='#52423435';ctx.shadowBlur=w*.015;ctx.shadowOffsetY=h*.007;
+    ctx.fillStyle=colors[state.frame]||'#fff';ctx.fillRect(x-b,y-b,aw+b*2,ah+b*2);ctx.restore();
+    ctx.drawImage(canvases[i],x,y,aw,ah);
+    if(b){ctx.strokeStyle='#a79d8d45';ctx.lineWidth=w*.0008;ctx.strokeRect(x,y,aw,ah);}
+    layouts.push({x,y,width:aw,height:ah,border:b});x+=aw+gap;
+  }
+  if(!flat){
+    ctx.fillStyle='#d5c0a3';ctx.fillRect(w*.04,h*.83,w*.92,h*.012);
+    ctx.fillStyle='#e9dbc9';ctx.fillRect(w*.04,h*.83,w*.92,h*.003);
+    if(state.proof){ctx.fillStyle='#76695c';ctx.textAlign='center';ctx.font=w*.014+'px Moderna';ctx.fillText('PRÉVIA ILUSTRATIVA',w/2,h*.935);}
+  }
+  ctx.restore();return layouts;
 }
