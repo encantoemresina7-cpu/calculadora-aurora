@@ -4,7 +4,7 @@ Editor sem login para organizar as artes, personalizar o nome e a inicial e expo
 
 ## Biblioteca
 
-20 artes enviadas pela loja, além dos quatro temas já existentes. Categorias: Fazendeiro, Dinossauro, Astronauta, Safari, Bosque encantado, Marinheiro e Outros temas. Os originais são preservados em assets/kits/*-original.webp (cópias WebP otimizadas, na resolução de origem); seis bases sem texto tornam os monogramas e nomes reutilizáveis. O monograma editável é composto com a fonte e o acabamento escolhidos; sua forma acompanha a letra digitada.
+42 artes enviadas pela loja, além dos quatro temas já existentes (46 opções). Categorias: Fazendeiro, Dinossauro, Astronauta, Ursinho Aviador, Bailarina, Fazendinha Rosa, Jardim Encantado, Princesas, Pássaros, Borboletas, Safari, Bosque encantado, Marinheiro e Outros temas. O kit Ursinho Aviador tem cinco opções. Algumas artes aparecem em mais de um tema quando combinam com os dois. Os originais são preservados em assets/kits/*-original.webp (cópias WebP otimizadas, na resolução de origem); onze bases sem texto tornam os monogramas e nomes reutilizáveis. O monograma editável é composto com a fonte e o acabamento escolhidos; sua forma acompanha a letra digitada.
 
 ## Uso
 

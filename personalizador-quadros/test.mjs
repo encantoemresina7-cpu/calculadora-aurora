@@ -5,7 +5,7 @@ import { setPngDpi, zipFiles } from './export.mjs';
 assert.equal(initialFromName('  Érica '),'É');
 assert.equal(initialFromName('Álvaro'),'Á');
 assert.equal(initialFromName(''),'');
-assert.equal(BUILTINS.filter(a=>a.monogram).length,4);
+assert.ok(BUILTINS.filter(a=>a.monogram).every(a=>a.hasName && a.url.endsWith('-base.webp')),'Monogramas precisam de uma base sem letra fixa e nome editável.');
 // A white interior behind a dark contour must survive paper removal.
 const pixels=new Uint8ClampedArray(9*9*4).fill(255);
 for(let y=2;y<=6;y++)for(let x=2;x<=6;x++)if(x===2||x===6||y===2||y===6){const i=(y*9+x)*4;pixels[i]=pixels[i+1]=pixels[i+2]=30;}

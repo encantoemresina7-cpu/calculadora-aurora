@@ -1,7 +1,7 @@
-import { DEFAULT_STATE, clamp, getDimensions, renderArt, renderScene, renderFlatPreview, renderKit } from './render.mjs?v=20261014-kits';
-import { setPngDpi, zipFiles } from './export.mjs?v=20261014-kits';
-import { KITS, BUILTINS, initialFromName } from './catalog.mjs?v=20261014-kits';
-import { prepareImage } from './images.mjs?v=20261014-kits';
+import { DEFAULT_STATE, clamp, getDimensions, renderArt, renderScene, renderFlatPreview, renderKit } from './render.mjs?v=20261014-artes';
+import { setPngDpi, zipFiles } from './export.mjs?v=20261014-artes';
+import { KITS, BUILTINS, initialFromName } from './catalog.mjs?v=20261014-artes';
+import { prepareImage } from './images.mjs?v=20261014-artes';
 
 const $=id=>document.getElementById(id);
 const KEY='atelie-quadros-v2',LEGACY='atelie-quadros-v1';
@@ -19,7 +19,7 @@ function design(id,kit){
   return {...DEFAULT_STATE,artId:art.id,name:'',showName:!!art.hasName,showInitial:!!art.monogram,
     monogram:!!art.monogram,embeddedName:!!art.embeddedName,removePaper:art.removePaper!==false,
     initialSize:76,initialX:.5,initialY:.40,initialFont:'Classica',initialColor:kit.color,initialPattern:kit.pattern,
-    color:kit.color,imageScale:100,nameY:art.nameY||.895,background:'#ffffff'};
+    color:kit.color,imageScale:100,nameY:art.nameY||.895,namePlacement:art.namePlacement||'bottom',background:'#ffffff'};
 }
 function fresh(){
   const kit=KITS[0];
@@ -42,7 +42,8 @@ function buttonsEnabled(){
   $('downloadKit').hidden=state.composition!=='kit';
 }
 function renderGallery(){
-  const list=arts.filter(a=>$('artFilter').value==='all'||($('artFilter').value==='custom'?a.custom:a.kit===$('artFilter').value));
+  const filter=$('artFilter').value;
+  const list=arts.filter(a=>filter==='all'||(filter==='custom'?a.custom:a.kit===filter||a.kits?.includes(filter)));
   $('gallery').replaceChildren();
   for(const art of list){
     const b=document.createElement('button');b.type='button';b.className='art-option';b.dataset.artId=art.id;

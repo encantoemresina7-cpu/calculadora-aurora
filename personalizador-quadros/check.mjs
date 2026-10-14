@@ -27,6 +27,7 @@ for(const art of BUILTINS)for(const file of [art.url,art.thumb].filter(Boolean))
   if(file.endsWith('.webp')&&(bytes.toString('ascii',0,4)!=='RIFF'||bytes.toString('ascii',8,12)!=='WEBP'))throw new Error('WebP inválido: '+file);
 }
 if(new Set(BUILTINS.map(a=>a.id)).size!==BUILTINS.length)throw new Error('Arte duplicada');
+for(const art of BUILTINS)for(const id of [art.kit,...(art.kits||[])])if(!KITS.some(k=>k.id===id))throw new Error('Tema desconhecido na arte: '+art.id);
 for(const kit of KITS)if(kit.defaults.length!==3||kit.defaults.some(id=>!BUILTINS.some(a=>a.id===id)))throw new Error('Kit inválido: '+kit.id);
 const tests=spawnSync(process.execPath,[path.join(root,'test.mjs')],{encoding:'utf8'});
 if(tests.status!==0)throw new Error(tests.stderr||tests.stdout);

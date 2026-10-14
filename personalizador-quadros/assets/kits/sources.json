@@ -19,7 +19,29 @@
     "marinheiro-veleiro": "Pequeno veleiro em aguarela(3).png",
     "fazendeiro-celeiro": "Celeiro e trator em aguarela delicada(1).png",
     "fazendeiro-inicial": "Quinta em aguarela com a inicial L(1).png",
-    "fazendeiro-feno": "Trator verde com carreta de feno(1).png"
+    "fazendeiro-feno": "Trator verde com carreta de feno(1).png",
+    "aviador-biplano": "Ursinho aviador num biplano vintage(2).png",
+    "aviador-estrelas": "Urso aviador entre nuvens e estrelas(2).png",
+    "aviador-azul": "Urso piloto nas nuvens(2).png",
+    "aviador-paraquedas": "Ursinho aviador a descer de paraquedas(3).png",
+    "aviador-aviao": "Ursinho num avião vintage(1).png",
+    "ballet-floral": "Bailarina Alice em tutu floral rosa(2).png",
+    "jardim-flores": "exec-435e4ef7-1209-40e5-8709-8b7c33e43cae(3).png",
+    "fazendeira-vitelo": "Menina agricultora com vitelo(2).png",
+    "fazendeira-ponei": "Menina e pónei no prado(2).png",
+    "jardim-jardineira": "Pequena jardineira no jardim encantado(2).png",
+    "princesa-rosa": "Princesa em aguarela com Alice(1).png",
+    "safari-pastel": "Safari pastel da Alana(2).png",
+    "ballet-princesa": "Princesa bailarina em dança graciosa.png",
+    "ballet-vestido": "Vestido de ballet rosa com flores(2).png",
+    "passaros-casinha": "Casinha de pássaros em aguarela(2).png",
+    "passaros-menta": "Casinha menta com passarinho azul(2).png",
+    "borboletas-lavanda": "Borboleta lavanda entre margaridas(3).png",
+    "borboletas-flores": "Borboletas em voo entre flores(3).png",
+    "borboletas-inicial": "Monograma floral da Elena em aguarela(2).png",
+    "fazendeira-bezerro": "Bezerro fofo com laço rosa(1).png",
+    "fazendeira-porquinho": "Leitãozinho feliz com lenço azul(1).png",
+    "fazendeira-menina": "Menina da quinta e o pintainho(3).png"
   },
   "editable_bases": {
     "astronauta-inicial": "exec-e28cdec3-0a00-4efb-941c-aeff38b0d1b3.png",
@@ -27,6 +49,22 @@
     "marinheiro-inicial": "exec-49709e7a-08e5-46d9-8596-72cd7316e4e1.png",
     "fazendeiro-inicial": "exec-9d6dbf8a-e874-4ac4-8f14-2bb5b32e62e4.png",
     "safari-amigos": "exec-c55aa826-4cfb-477a-ab23-c1817ec43ac5.png",
-    "safari-jipe": "exec-0f52eacd-e806-4b0b-8d70-3b97882160ed.png"
-  }
+    "safari-jipe": "exec-0f52eacd-e806-4b0b-8d70-3b97882160ed.png",
+    "ballet-floral": "exec-6ac02665-5890-46dc-9a76-9fde9668f718.png",
+    "princesa-rosa": "exec-1bda182b-d893-4e1c-9e21-3103d5e979db.png",
+    "safari-pastel": "exec-1859c7dd-9485-4b7b-815e-dba1b67ebb4e.png",
+    "ballet-vestido": "exec-521fa18e-c216-4446-bdb8-b93e45f322a6.png",
+    "borboletas-inicial": "exec-96f3b7cd-654b-4900-985a-ca64046466a9.png"
+  },
+  "duplicate_uploads": {
+    "Bernardo e os animais do safari (1)(3).png": "safari-amigos",
+    "Leãozinho ao volante num carrinho vintage(2).png": "safari-leao",
+    "Menino da quinta com trator verde(2).png": "fazendeiro-menino",
+    "Safari encantado do João(4).png": "safari-jipe",
+    "Trator verde vintage em aguarela (1)(1).png": "fazendeiro-trator",
+    "Três amiguinhos no bosque encantado(2).png": "bosque-amigos",
+    "Pónei com coroa de flores(1).png": "cavalinho",
+    "Pisco-de-peito-ruivo num ramo florido(2).png": "passarinho"
+  },
+  "edit_notes": "Bases adicionais: remover apenas os nomes Alice/Alana; na arte de borboletas remover E e Elena, preservando flores, borboletas e posições para receber texto editável no aplicativo."
 }
