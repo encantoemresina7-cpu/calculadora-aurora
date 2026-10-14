@@ -1,4 +1,5 @@
 import { renderInitial } from './initial.mjs?v=20261014-kits';
+import { roomPictureArea } from './scenes.mjs?v=20261014-cenarios';
 export const FORMATS = {
   a4: { label: 'A4', width: 2480, height: 3508 },
   '24x33': { label: '24 × 33 cm', width: 2835, height: 3898 },
@@ -105,8 +106,13 @@ export function renderArt(ctx, w, h, state, image) {
   return nameBox;
 }
 
-export function getSceneLayout(w, h, artRatio, frame) {
-  const border = frame === 'none' ? 0 : w * 0.019;
+export function getSceneLayout(w, h, artRatio, frame, room=false) {
+  const border = frame === 'none' ? 0 : w * (room ? 0.012 : 0.019);
+  if(room){
+    const area=roomPictureArea(w,h);
+    const height=Math.min(area.height,area.width/artRatio),width=height*artRatio;
+    return {x:area.x+(area.width-width)/2,y:area.y+(area.height-height)/2,width,height,border};
+  }
   let innerW = w * (artRatio > 1.1 ? 0.65 : artRatio > 0.95 ? 0.52 : 0.44);
   let innerH = innerW / artRatio;
   if (innerH > h * 0.65) { innerH = h * 0.65; innerW = innerH * artRatio; }
@@ -114,8 +120,13 @@ export function getSceneLayout(w, h, artRatio, frame) {
   return { x, y, width: innerW, height: innerH, border };
 }
 
-export function renderScene(ctx, w, h, state, artCanvas) {
-  ctx.save();ctx.clearRect(0,0,w,h);
+function sceneBackground(ctx,w,h,state,backgroundImage){
+  if(backgroundImage){
+    const iw=backgroundImage.naturalWidth||backgroundImage.width,ih=backgroundImage.naturalHeight||backgroundImage.height;
+    const scale=Math.max(w/iw,h/ih);
+    ctx.drawImage(backgroundImage,(w-iw*scale)/2,(h-ih*scale)/2,iw*scale,ih*scale);
+    return;
+  }
   const wall = ctx.createLinearGradient(0, 0, w, h);
   wall.addColorStop(0, state.wallColor||'#f9f6f1');wall.addColorStop(1, state.wallColor||'#ece7df');
   ctx.fillStyle = wall;ctx.fillRect(0,0,w,h);
@@ -128,8 +139,19 @@ export function renderScene(ctx, w, h, state, artCanvas) {
   shelf.addColorStop(0,'#e2d3c0');shelf.addColorStop(1,'#cbb8a0');
   ctx.fillStyle = shelf;ctx.fillRect(w*.08,shelfY,w*.84,h*.012);
   ctx.fillStyle='#f3ede4';ctx.fillRect(w*.08,shelfY,w*.84,h*.003);
+}
 
-  const layout = getSceneLayout(w,h,artCanvas.width/artCanvas.height,state.frame);
+function sceneProof(ctx,w,h,room){
+  ctx.save();ctx.font=`${w*.014}px "Moderna"`;ctx.textAlign='center';ctx.textBaseline='middle';
+  if(room){ctx.fillStyle='#ffffffdc';ctx.fillRect(w*.37,h*.947,w*.26,h*.026);}
+  ctx.fillStyle='#76695c';ctx.fillText('PRÉVIA ILUSTRATIVA',w/2,h*(room ? .96 : .934));ctx.restore();
+}
+
+export function renderScene(ctx, w, h, state, artCanvas, backgroundImage=null) {
+  ctx.save();ctx.clearRect(0,0,w,h);
+  sceneBackground(ctx,w,h,state,backgroundImage);
+
+  const layout = getSceneLayout(w,h,artCanvas.width/artCanvas.height,state.frame,!!backgroundImage);
   const {x,y,width:aw,height:ah,border:b} = layout;
   ctx.save();ctx.shadowColor='#52423438';ctx.shadowBlur=w*.038;ctx.shadowOffsetX=w*.009;ctx.shadowOffsetY=h*.017;
   ctx.fillStyle=state.frame==='none'?'#fff':({white:'#fffefd',wood:'#ccae8b',pink:'#d9b5c3',black:'#373332'}[state.frame] || '#fffefd');
@@ -144,7 +166,7 @@ export function renderScene(ctx, w, h, state, artCanvas) {
   }
   ctx.drawImage(artCanvas,x,y,aw,ah);
   ctx.strokeStyle='#74615525';ctx.lineWidth=w*.002;ctx.strokeRect(x,y,aw,ah);
-  if(state.proof){ctx.font=`${w*.016}px "Moderna"`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#9c8c81';ctx.fillText('PRÉVIA ILUSTRATIVA',w/2,h*.934);}
+  if(state.proof)sceneProof(ctx,w,h,!!backgroundImage);
   ctx.restore();
   return layout;
 }
@@ -159,13 +181,16 @@ export function renderFlatPreview(ctx, w, h, artCanvas) {
 }
 
 // The same composition is used by the screen, downloads and sharing.
-export function renderKit(ctx,w,h,state,canvases,flat=false){
+export function renderKit(ctx,w,h,state,canvases,flat=false,backgroundImage=null){
   ctx.save();ctx.clearRect(0,0,w,h);
-  ctx.fillStyle=flat?'#f3eeeb':(state.wallColor||'#f2eee8');ctx.fillRect(0,0,w,h);
-  const gap=w*.025,limit=w*.87,ratios=canvases.map(c=>c.width/c.height);
-  const ah=Math.min(h*.59,(limit-gap*2)/ratios.reduce((a,b)=>a+b,0));
+  const room=!flat&&!!backgroundImage;
+  if(flat){ctx.fillStyle='#f3eeeb';ctx.fillRect(0,0,w,h);}
+  else sceneBackground(ctx,w,h,state,backgroundImage);
+  const area=room?roomPictureArea(w,h):null;
+  const gap=w*.025,limit=room?area.width:w*.87,ratios=canvases.map(c=>c.width/c.height);
+  const ah=Math.min(room?area.height:h*.59,(limit-gap*2)/ratios.reduce((a,b)=>a+b,0));
   const total=ah*ratios.reduce((a,b)=>a+b,0)+gap*2;
-  let x=(w-total)/2;const y=(h-ah)/2-h*.04,layouts=[];
+  let x=(w-total)/2;const y=room?area.y+(area.height-ah)/2:(h-ah)/2-h*.04,layouts=[];
   for(let i=0;i<canvases.length;i++){
     const aw=ah*ratios[i],b=flat||state.frame==='none'?0:w*.010;
     const colors={white:'#fffefd',wood:'#cdb18b',pink:'#d9b5c3',black:'#373332'};
@@ -176,9 +201,7 @@ export function renderKit(ctx,w,h,state,canvases,flat=false){
     layouts.push({x,y,width:aw,height:ah,border:b});x+=aw+gap;
   }
   if(!flat){
-    ctx.fillStyle='#d5c0a3';ctx.fillRect(w*.04,h*.83,w*.92,h*.012);
-    ctx.fillStyle='#e9dbc9';ctx.fillRect(w*.04,h*.83,w*.92,h*.003);
-    if(state.proof){ctx.fillStyle='#76695c';ctx.textAlign='center';ctx.font=w*.014+'px Moderna';ctx.fillText('PRÉVIA ILUSTRATIVA',w/2,h*.935);}
+    if(state.proof)sceneProof(ctx,w,h,room);
   }
   ctx.restore();return layouts;
 }

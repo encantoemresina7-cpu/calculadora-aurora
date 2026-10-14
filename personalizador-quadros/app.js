@@ -1,14 +1,15 @@
-import { DEFAULT_STATE, clamp, getDimensions, renderArt, renderScene, renderFlatPreview, renderKit } from './render.mjs?v=20261014-artes';
-import { setPngDpi, zipFiles } from './export.mjs?v=20261014-artes';
-import { KITS, BUILTINS, initialFromName } from './catalog.mjs?v=20261014-artes';
-import { prepareImage } from './images.mjs?v=20261014-artes';
+import { DEFAULT_STATE, clamp, getDimensions, renderArt, renderScene, renderFlatPreview, renderKit } from './render.mjs?v=20261014-cenarios';
+import { setPngDpi, zipFiles } from './export.mjs?v=20261014-cenarios';
+import { KITS, BUILTINS, initialFromName } from './catalog.mjs?v=20261014-cenarios';
+import { prepareImage } from './images.mjs?v=20261014-cenarios';
+import { SCENES, sceneById } from './scenes.mjs?v=20261014-cenarios';
 
 const $=id=>document.getElementById(id);
 const KEY='atelie-quadros-v2',LEGACY='atelie-quadros-v1';
 const COLORS=['#987180','#8d719d','#5f89ae','#73865c','#bc975d','#373139'];
 const BACKGROUNDS=['#ffffff','#fff4cb','#e5effa','#eee4f8','#fde7ec','#e8f0df','#f5ead8'];
 const canvas=$('previewCanvas'),ctx=canvas.getContext('2d');
-let arts=[...BUILTINS],state,db=null,history=[],images=[],imageCache=new Map(),layouts=[],nameBoxes=[];
+let arts=[...BUILTINS],state,db=null,history=[],images=[],sceneImage=null,imageCache=new Map(),layouts=[],nameBoxes=[];
 let revision=0,ready=false,exporting=false,paintRequest=0,saveTimer=0,toastTimer=0,drag=null;
 const clone=x=>JSON.parse(JSON.stringify(x));
 const current=()=>state.frames[state.selected];
@@ -24,7 +25,7 @@ function design(id,kit){
 function fresh(){
   const kit=KITS[0];
   return {version:2,kitId:kit.id,composition:'kit',selected:1,name:'',initialOverride:'',autoInitial:true,
-    frame:'white',wallColor:'#f4eee8',proof:true,mode:'scene',format:'a4',
+    frame:'white',wallColor:'#f4eee8',sceneId:'claro',proof:true,mode:'scene',format:'a4',
     frames:kit.defaults.map(id=>design(id,kit)),drafts:{}};
 }
 function toast(text){clearTimeout(toastTimer);$('toast').textContent=text;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,6000);}
@@ -63,7 +64,7 @@ function sync(){
   const d=current();
   $('undoBtn').disabled=history.length===0;
   const fields={nameInput:state.name,initialInput:state.autoInitial?initialFromName(state.name):state.initialOverride,
-    kitSelect:state.kitId,fontSelect:d.font,colorInput:d.color,sizeRange:d.size,formatSelect:state.format,
+    kitSelect:state.kitId,sceneSelect:state.sceneId,fontSelect:d.font,colorInput:d.color,sizeRange:d.size,formatSelect:state.format,
     imageScale:d.imageScale,imageY:d.imageY,frameSelect:state.frame,backgroundInput:d.background,
     wallInput:state.wallColor,subtitleInput:d.subtitle,initialColor:d.initialColor,initialSize:d.initialSize,
     initialFont:d.initialFont,initialPattern:d.initialPattern,initialX:Math.round(d.initialX*100),initialY:Math.round(d.initialY*100)};
@@ -71,6 +72,7 @@ function sync(){
   $('autoInitial').checked=state.autoInitial;$('initialInput').disabled=state.autoInitial;
   for(const[id,key]of Object.entries({showName:'showName',showInitial:'showInitial',removePaperCheck:'removePaper',borderCheck:'border'}))$(id).checked=!!d[key];
   $('proofCheck').checked=state.proof;
+  $('sceneControls').hidden=state.mode!=='scene';$('wallField').hidden=state.sceneId!=='wall';
   $('initialOptions').hidden=!d.showInitial;$('nameCount').textContent=state.name.length+'/50';
   $('sizeOutput').value=d.size+'%';$('imageScaleOutput').value=d.imageScale+'%';
   $('imageYOutput').value=d.imageY===0?'Centro':d.imageY+'%';$('initialSizeOutput').value=d.initialSize+'%';
@@ -105,8 +107,8 @@ function createArt(i,width){
 function paint(){
   if(!ready)return;
   const rendered=state.frames.map((_,i)=>createArt(i,720));nameBoxes=rendered.map(r=>r.bounds);
-  if(state.composition==='kit')layouts=renderKit(ctx,canvas.width,canvas.height,state,rendered.map(r=>r.canvas),state.mode==='art');
-  else{const r=rendered[state.selected].canvas;layouts=[];layouts[state.selected]=state.mode==='scene'?renderScene(ctx,canvas.width,canvas.height,state,r):renderFlatPreview(ctx,canvas.width,canvas.height,r);}
+  if(state.composition==='kit')layouts=renderKit(ctx,canvas.width,canvas.height,state,rendered.map(r=>r.canvas),state.mode==='art',sceneImage);
+  else{const r=rendered[state.selected].canvas;layouts=[];layouts[state.selected]=state.mode==='scene'?renderScene(ctx,canvas.width,canvas.height,state,r,sceneImage):renderFlatPreview(ctx,canvas.width,canvas.height,r);}
   if(state.composition==='kit'){
     const l=layouts[state.selected];ctx.save();ctx.strokeStyle='#7a546b';ctx.setLineDash([7,8]);ctx.lineWidth=2;ctx.strokeRect(l.x-l.border-7,l.y-l.border-7,l.width+l.border*2+14,l.height+l.border*2+14);ctx.restore();
   }
@@ -116,14 +118,17 @@ function decode(url){return new Promise((resolve,reject)=>{const im=new Image();
 async function refreshImages(){
   ready=false;buttonsEnabled();$('canvasLoading').hidden=false;const ticket=++revision;
   try{
-    const loaded=await Promise.all(state.frames.map(async f=>{
+    const background=sceneById(state.sceneId);
+    const sceneKey='scene:'+background.id;
+    if(background.url&&!imageCache.has(sceneKey))imageCache.set(sceneKey,decode(background.url).catch(e=>{imageCache.delete(sceneKey);throw e;}));
+    const [loaded,room]=await Promise.all([Promise.all(state.frames.map(async f=>{
       const a=artById(f.artId);if(!a)throw new Error('Arte não encontrada');
       const key=a.id+':'+f.removePaper;
       if(!imageCache.has(key))imageCache.set(key,decode(a.url).then(im=>prepareImage(im,f.removePaper,a)));
       try{return await imageCache.get(key);}catch(e){imageCache.delete(key);throw e;}
-    }));
-    if(ticket!==revision)return;images=loaded;ready=true;sync();paint();save();
-  }catch{if(ticket!==revision)return;$('canvasLoading').hidden=true;toast('Uma arte não carregou. Escolha outra imagem ou toque em tentar novamente.');}
+    })),background.url?imageCache.get(sceneKey):null]);
+    if(ticket!==revision)return;images=loaded;sceneImage=room;ready=true;sync();paint();save();
+  }catch{if(ticket!==revision)return;$('canvasLoading').hidden=true;toast('Uma imagem não carregou. Escolha outra arte ou cenário, ou toque em recarregar as artes.');}
   buttonsEnabled();
 }
 function selectArt(id){
@@ -179,8 +184,8 @@ async function exportImage(kind,share=false){
     else{
       const c=document.createElement('canvas');c.width=1600;c.height=1600;
       const list=state.frames.map((_,i)=>createArt(i,1000).canvas);
-      if(state.composition==='kit')renderKit(c.getContext('2d'),1600,1600,state,list);
-      else renderScene(c.getContext('2d'),1600,1600,state,list[state.selected]);
+      if(state.composition==='kit')renderKit(c.getContext('2d'),1600,1600,state,list,false,sceneImage);
+      else renderScene(c.getContext('2d'),1600,1600,state,list[state.selected],sceneImage);
       blob=await canvasBlob(c,'image/jpeg',.95);filename='previa-'+safeName(state.name)+'.jpg';
     }
     if(rev!==revision)throw new Error('A arte mudou');
@@ -212,6 +217,7 @@ canvas.addEventListener('pointermove',e=>{
 for(const event of ['pointerup','pointercancel'])canvas.addEventListener(event,e=>{if(!drag||drag.id!==e.pointerId)return;drag=null;canvas.classList.remove('is-dragging');save();});
 canvas.addEventListener('keydown',e=>{const v={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(v){e.preventDefault();changeDesign({nameX:clamp(current().nameX+v[0]*.01,.02,.98),nameY:clamp(current().nameY+v[1]*.01,.03,.97)});}});
 $('kitSelect').addEventListener('change',e=>switchKit(e.target.value));
+$('sceneSelect').addEventListener('change',e=>{changeGlobal({sceneId:e.target.value});refreshImages();});
 $('artFilter').addEventListener('change',renderGallery);
 $('compositionSingle').addEventListener('click',()=>changeGlobal({composition:'single'}));
 $('compositionKit').addEventListener('click',()=>changeGlobal({composition:'kit'}));
@@ -265,6 +271,7 @@ function sanitize(saved){
   if(typeof saved.autoInitial==='boolean')base.autoInitial=saved.autoInitial;
   if(['kit','single'].includes(saved.composition))base.composition=saved.composition;
   if(['scene','art'].includes(saved.mode))base.mode=saved.mode;
+  if(SCENES.some(scene=>scene.id===saved.sceneId))base.sceneId=saved.sceneId;
   if(['a4','24x33','square','original'].includes(saved.format))base.format=saved.format;
   if(['white','wood','pink','black','none'].includes(saved.frame))base.frame=saved.frame;
   if(validColor(saved.wallColor))base.wallColor=saved.wallColor;
@@ -289,6 +296,7 @@ function sanitize(saved){
 }
 async function init(){
   state=fresh();
+  for(const scene of SCENES)$('sceneSelect').add(new Option(scene.title,scene.id));
   for(const kit of KITS){const o=new Option(kit.icon+' '+kit.title,kit.id);$('kitSelect').add(o);$('artFilter').add(new Option(kit.title,kit.id));}
   $('artFilter').add(new Option('Minhas imagens','custom'));
   try{db=await openDB();const saved=await dbOperation('readonly',s=>s.getAll());arts.push(...saved.filter(a=>a.blob instanceof Blob).map(a=>({...a,url:URL.createObjectURL(a.blob),custom:true,kit:'custom',hasName:true,removePaper:false})));}catch{db=null;}

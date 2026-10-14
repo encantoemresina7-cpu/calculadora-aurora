@@ -7,8 +7,8 @@
   <meta name="description" content="Personalize quadros infantis por kit: escolha as artes, troque o fundo e adicione o nome e a inicial do cliente.">
   <title>Seu Ateliê · Kits personalizados</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="styles.css?v=20261014-artes">
-  <script type="module" src="app.js?v=20261014-artes"></script>
+  <link rel="stylesheet" href="styles.css?v=20261014-cenarios">
+  <script type="module" src="app.js?v=20261014-cenarios"></script>
 </head>
 <body>
   <header class="site-header">
@@ -76,16 +76,17 @@
             <div class="range-header"><label for="imageScale">Tamanho da imagem</label><output id="imageScaleOutput"></output></div><input type="range" id="imageScale" min="35" max="140">
             <div class="range-header"><label for="imageY">Posição da imagem</label><output id="imageYOutput"></output></div><input type="range" id="imageY" min="-25" max="25">
           </details>
-          <div class="two-fields"><div><label for="frameSelect" class="field-label">Moldura da prévia</label><select id="frameSelect"><option value="white">Branca</option><option value="wood">Madeira clara</option><option value="pink">Rosa</option><option value="black">Preta</option><option value="none">Sem moldura</option></select></div><div><label for="wallInput" class="field-label">Parede da prévia</label><div class="color-picker"><input id="wallInput" type="color" aria-label="Cor da parede da prévia"></div></div></div>
+          <div class="two-fields"><div><label for="frameSelect" class="field-label">Moldura da prévia</label><select id="frameSelect"><option value="white">Branca</option><option value="wood">Madeira clara</option><option value="pink">Rosa</option><option value="black">Preta</option><option value="none">Sem moldura</option></select></div><div id="wallField"><label for="wallInput" class="field-label">Parede da prévia</label><div class="color-picker"><input id="wallInput" type="color" aria-label="Cor da parede da prévia"></div></div></div>
           <label class="checkbox"><input id="borderCheck" type="checkbox"><span>Borda delicada neste quadro</span></label>
           <label class="checkbox"><input id="proofCheck" type="checkbox" checked><span>Escrever “Prévia ilustrativa” no cenário</span></label>
-          <p class="hint">A moldura e a parede aparecem somente na prévia.</p>
+          <p class="hint">Escolha o cenário acima da prévia. Cenário e moldura aparecem na imagem para o cliente.</p>
         </section>
       </aside>
       <section class="preview-section" aria-label="Prévia e exportação">
         <div class="preview-heading"><div><span class="live-dot"></span><strong>Sua criação, ao vivo</strong></div><button id="undoBtn" class="icon-button" aria-label="Desfazer última alteração" title="Desfazer" disabled>↶</button></div>
         <div class="preview-card">
           <div class="preview-toolbar"><div class="segmented" role="group" aria-label="Tipo de prévia"><button type="button" id="sceneMode" class="active" aria-pressed="true">Com moldura</button><button type="button" id="artMode" aria-pressed="false">Só a arte</button></div><span class="format-badge" id="formatBadge">A4</span></div>
+          <div class="scene-controls" id="sceneControls"><label for="sceneSelect">Cenário dos quadros</label><select id="sceneSelect" aria-label="Cenário dos quadros"></select></div>
           <div class="slot-controls" id="slotControls" role="group" aria-label="Escolha o quadro para editar"><button type="button" class="slot-button" id="slot0"><strong>Quadro 1</strong><small></small></button><button type="button" class="slot-button" id="slot1"><strong>Quadro 2</strong><small></small></button><button type="button" class="slot-button" id="slot2"><strong>Quadro 3</strong><small></small></button></div>
           <div class="canvas-wrap"><canvas id="previewCanvas" width="1200" height="1200" tabindex="0" aria-label="Prévia dos quadros. Toque em um quadro para editar. Arraste o nome ou use as setas do teclado para ajustar."></canvas><div class="canvas-loading" id="canvasLoading"><span></span> Preparando suas artes…</div></div>
           <div class="preview-footer"><span><span id="currentArtLabel"></span><span class="divider-dot">·</span><span id="currentNameLabel"></span></span><button id="resetBtn" class="text-button">Novo cliente</button></div>
@@ -104,6 +105,6 @@
     <footer class="page-footer"><span>Pequenos detalhes. Lindas memórias.</span><span>Personalizador de quadros · Biblioteca de kits</span></footer>
   </main>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <dialog id="helpDialog" aria-labelledby="helpTitle"><button id="closeHelp" class="dialog-close" aria-label="Fechar ajuda">×</button><p class="eyebrow">SEU ATELIÊ, DO SEU JEITO</p><h2 id="helpTitle">Uma encomenda em poucos passos</h2><ol><li><strong>Escolha o kit.</strong> Use o tema pronto ou monte um kit trocando as imagens de cada quadro.</li><li><strong>Digite o nome.</strong> A inicial acompanha a primeira letra do nome. Você também pode escolher outra inicial.</li><li><strong>Edite cada quadro.</strong> Toque em Quadro 1, 2 ou 3. Escolha se quer nome e inicial, altere cores e ajuste as posições.</li><li><strong>Prepare a entrega.</strong> Baixe ou compartilhe a prévia para aprovação. Para imprimir, baixe o kit em ZIP ou cada quadro separadamente.</li></ol><p class="help-note">No formato A4, cada arte tem 2480 × 3508 pixels e metadados de 300 dpi. Imprima em escala de 100%. A nitidez depende da resolução original. Para adicionar imagens próprias, prefira arquivos sem nomes impressos. As imagens próprias ficam neste navegador e não passam automaticamente para outro aparelho.</p><button id="startBtn" class="button button-primary">Vamos personalizar</button></dialog>
+  <dialog id="helpDialog" aria-labelledby="helpTitle"><button id="closeHelp" class="dialog-close" aria-label="Fechar ajuda">×</button><p class="eyebrow">SEU ATELIÊ, DO SEU JEITO</p><h2 id="helpTitle">Uma encomenda em poucos passos</h2><ol><li><strong>Escolha o kit.</strong> Use o tema pronto ou monte um kit trocando as imagens de cada quadro.</li><li><strong>Digite o nome.</strong> A inicial acompanha a primeira letra do nome. Você também pode escolher outra inicial.</li><li><strong>Edite cada quadro.</strong> Toque em Quadro 1, 2 ou 3. Escolha se quer nome e inicial, altere cores e ajuste as posições.</li><li><strong>Escolha o cenário.</strong> Acima da prévia, escolha o quarto claro, azul, rosa ou a parede lisa.</li><li><strong>Prepare a entrega.</strong> Baixe ou compartilhe a prévia para aprovação. Para imprimir, baixe o kit em ZIP ou cada quadro separadamente.</li></ol><p class="help-note">No formato A4, cada arte tem 2480 × 3508 pixels e metadados de 300 dpi. Imprima em escala de 100%. A nitidez depende da resolução original. Para adicionar imagens próprias, prefira arquivos sem nomes impressos. As imagens próprias ficam neste navegador e não passam automaticamente para outro aparelho.</p><button id="startBtn" class="button button-primary">Vamos personalizar</button></dialog>
 </body>
 </html>

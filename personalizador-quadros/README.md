@@ -18,6 +18,10 @@ O fundo da arte e a parede da prévia são independentes. A opção de colorir o
 
 Os ajustes e uploads ficam no navegador do aparelho. Os kits incluídos ficam disponíveis para qualquer aparelho que abra o site. Nenhuma imagem é enviada a um serviço de edição externo durante o uso.
 
+## Cenários da prévia
+
+Acima da prévia, escolha Quarto claro com berço, Quarto azul, Quarto rosa ou Parede lisa. Os três quartos usam imagens de ambiente sem quadros, compostas com as artes atuais e sombras das molduras. A parede lisa permite escolher a cor. O cenário escolhido é guardado neste navegador e aparece no JPG para aprovação e no compartilhamento. As artes PNG de impressão e o kit ZIP continuam contendo apenas as artes, sem móveis ou molduras. A opção Só a arte mostra a composição sem cenário.
+
 ## Publicação no Render
 
 - Repositório: https://github.com/encantoemresina7-cpu/calculadora-aurora

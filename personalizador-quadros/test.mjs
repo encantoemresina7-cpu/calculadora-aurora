@@ -2,10 +2,21 @@ import assert from 'node:assert/strict';
 import { initialFromName, BUILTINS } from './catalog.mjs';
 import { paperMask } from './images.mjs';
 import { setPngDpi, zipFiles } from './export.mjs';
+import { roomPictureArea, sceneById } from './scenes.mjs';
+import { getSceneLayout } from './render.mjs';
 assert.equal(initialFromName('  Érica '),'É');
 assert.equal(initialFromName('Álvaro'),'Á');
 assert.equal(initialFromName(''),'');
 assert.ok(BUILTINS.filter(a=>a.monogram).every(a=>a.hasName && a.url.endsWith('-base.webp')),'Monogramas precisam de uma base sem letra fixa e nome editável.');
+// Portrait and landscape prints must stay on the empty wall above the furniture.
+assert.equal(sceneById('inexistente').id,'claro');
+for(const ratio of [0.5,21/29.7,1,1.5,3]){
+  const wall=roomPictureArea(1200,1200),layout=getSceneLayout(1200,1200,ratio,'white',true);
+  assert.ok(layout.x>=wall.x-0.01&&layout.y>=wall.y-0.01);
+  assert.ok(layout.x+layout.width<=wall.x+wall.width+0.01);
+  assert.ok(layout.y+layout.height+layout.border<1200*.62);
+  assert.ok(Math.abs(layout.width/layout.height-ratio)<0.00001);
+}
 // A white interior behind a dark contour must survive paper removal.
 const pixels=new Uint8ClampedArray(9*9*4).fill(255);
 for(let y=2;y<=6;y++)for(let x=2;x<=6;x++)if(x===2||x===6||y===2||y===6){const i=(y*9+x)*4;pixels[i]=pixels[i+1]=pixels[i+2]=30;}

@@ -3,9 +3,10 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { BUILTINS, KITS } from './catalog.mjs';
+import { SCENES } from './scenes.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-for (const file of ['app.js', 'render.mjs', 'export.mjs','catalog.mjs','images.mjs','initial.mjs','test.mjs']) {
+for (const file of ['app.js', 'render.mjs', 'export.mjs','catalog.mjs','images.mjs','initial.mjs','scenes.mjs','test.mjs']) {
   const result = spawnSync(process.execPath, ['--check', path.join(root, file)], { encoding: 'utf8' });
   if (result.status !== 0) throw new Error(result.stderr || `Falha de sintaxe em ${file}`);
 }
@@ -20,7 +21,7 @@ for (const file of ['styles.css', 'assets/bailarina.png', 'assets/sereia.png', '
   if (!existsSync(path.join(root, file))) throw new Error(`Arquivo ausente: ${file}`);
 }
 console.log('Personalizador verificado: sintaxe, controles e arquivos estáticos.');
-for(const art of BUILTINS)for(const file of [art.url,art.thumb].filter(Boolean)){
+for(const art of [...BUILTINS,...SCENES])for(const file of [art.url,art.thumb].filter(Boolean)){
   if(!existsSync(path.join(root,file)))throw new Error('Arte ausente: '+file);
   const bytes=readFileSync(path.join(root,file));
   if(bytes.length<100)throw new Error('Arte vazia: '+file);
@@ -32,4 +33,4 @@ for(const kit of KITS)if(kit.defaults.length!==3||kit.defaults.some(id=>!BUILTIN
 const tests=spawnSync(process.execPath,[path.join(root,'test.mjs')],{encoding:'utf8'});
 if(tests.status!==0)throw new Error(tests.stderr||tests.stdout);
 console.log(tests.stdout.trim());
-console.log(BUILTINS.length+' artes verificadas em '+KITS.length+' categorias.');
+console.log(BUILTINS.length+' artes verificadas em '+KITS.length+' categorias, com '+SCENES.length+' cenários.');
